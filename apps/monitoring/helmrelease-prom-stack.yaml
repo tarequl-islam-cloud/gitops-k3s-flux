@@ -1,1 +1,27 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: kube-prom-stack
+  namespace: monitoring
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: kube-prometheus-stack
+      version: 47.6.0   # example - adjust if needed
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus-community
+        namespace: flux-system
+  values:
+    grafana:
+      enabled: true
+      service:
+        type: ClusterIP
+      adminPassword: "GrafanaAdmin123!"   # change in production - consider SOPS encrypt
+    prometheus:
+      prometheusSpec:
+        additionalScrapeConfigs: []  # we'll use default
+  install:
+    createNamespace: true
 
