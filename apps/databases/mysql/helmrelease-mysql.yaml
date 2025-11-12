@@ -1,1 +1,27 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: mysql
+  namespace: database
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: mysql
+      version: 8.9.8   # choose a stable version; bitnami/mysql compatible
+      sourceRef:
+        kind: HelmRepository
+        name: bitnami
+        namespace: flux-system
+  values:
+    primary:
+      persistence:
+        enabled: true
+    auth:
+      existingSecret: mysql-credentials
+      rootPasswordKey: mysql-root-password
+      usernameKey: mysql-user
+      passwordKey: mysql-password
+  install:
+    createNamespace: true
 
