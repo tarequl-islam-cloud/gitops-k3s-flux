@@ -1,1 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboards-wordpress
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+data:
+  wordpress-logs.json: |
+    {
+      "annotations": { "list": [] },
+      "panels": [
+        {
+          "datasource": "Loki",
+          "title": "WordPress Pod Logs",
+          "type": "logs",
+          "targets": [
+            {
+              "expr": "{app=\"wordpress\"} |= \"error\"",
+              "refId": "A"
+            }
+          ],
+          "gridPos": { "h": 9, "w": 24, "x": 0, "y": 0 }
+        }
+      ],
+      "schemaVersion": 30,
+      "title": "WordPress Logs",
+      "version": 1
+    }
 
