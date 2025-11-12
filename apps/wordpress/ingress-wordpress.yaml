@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: wordpress-ingress
+  namespace: wordpress
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/server-snippet: |
+      # Lua header_filter to turn 404 into a redirect to google.com
+      header_filter_by_lua_block {
+        local status = ngx.status
+        if status == 404 then
+          ngx.header["Location"] = "https://www.google.com"
+          return ngx.exit(302)
+        end
+      }
+spec:
+  rules:
+    - host: app.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: wordpress
+                port:
+                  number: 80
