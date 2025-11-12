@@ -1,1 +1,30 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: wordpress
+  namespace: wordpress
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: wordpress
+      version: 15.0.6   # choose a compatible bitnami wordpress chart version
+      sourceRef:
+        kind: HelmRepository
+        name: bitnami
+        namespace: flux-system
+  values:
+    wordpressUsername: user
+    wordpressPassword: changeMe123
+    mariadb:
+      enabled: false   # we use external mysql chart
+    externalDatabase:
+      host: mysql.database.svc.cluster.local
+      user: wpuser
+      password: wpP@ss123
+      database: bitnami_wordpress
+    service:
+      type: ClusterIP
+  install:
+    createNamespace: true
 
